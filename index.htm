@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaxSafe System</title>
+    <link rel="icon" href="logo.png" type="image/png"/>
+    <link rel="stylesheet" href="index2.css">
+</head>
+<body>
+    <div class="grain"></div>
+    <canvas id="grid"></canvas>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor">
+        <div class="cursor-dot"></div>
+        <div class="cursor-ring"></div>
+    </div>
+
+    <!-- Floating Images (hidden by default) -->
+    <div class="floating-images" id="floatingImages" style="display: none;">
+        <img src="img/1.png" class="dvd-image" data-index="0" alt="">
+        <img src="img/2.jpg" class="dvd-image" data-index="1" alt="">
+        <img src="img/3.jpg" class="dvd-image" data-index="2" alt="">
+        <img src="img/4.jpg" class="dvd-image" data-index="3" alt="">
+        <img src="img/5.png" class="dvd-image" data-index="4" alt="">
+        <img src="img/6.jpg" class="dvd-image" data-index="5" alt="">
+        <img src="img/7.jpg" class="dvd-image" data-index="6" alt="">
+        <img src="img/8.jpg" class="dvd-image" data-index="7" alt="">
+        <img src="img/9.png" class="dvd-image" data-index="8" alt="">
+        <img src="img/10.png" class="dvd-image" data-index="9" alt="">
+    </div>
+
+    <div class="image-modal" id="imageModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <img src="index.html" alt="" id="modalImage">
+            <button class="modal-close">&times;</button>
+        </div>
+    </div>
+
+    <div class="symbols-modal" id="symbolsModal">
+        <div class="modal-backdrop"></div>
+        <div class="symbols-modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="modal-close" id="symbolsModalClose">&times;</button>
+            </div>
+
+            <div class="modal-tabs">
+                <button class="tab-btn active" data-tab="general">General</button>
+                <button class="tab-btn" data-tab="symbols">Symbols</button>
+                <button class="tab-btn" data-tab="layout">Layout</button>
+                <button class="tab-btn" data-tab="audio">Audio</button>
+                <button class="tab-btn" data-tab="datafeed">Datafeed</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- General Tab -->
+                <div class="tab-content active" id="generalTab">
+                    <div class="settings-section">
+                        <h3>Graphics Preset</h3>
+                        <div class="speed-buttons">
+                            <button class="preset-btn" data-preset="graphics" data-level="low">Low</button>
+                            <button class="preset-btn" data-preset="graphics" data-level="normal">Normal</button>
+                            <button class="preset-btn" data-preset="graphics" data-level="high">High</button>
+                        </div>
+                        <p class="form-hint">Adjust visual quality: connections, glow effects, background animations</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Performance Preset</h3>
+                        <div class="speed-buttons">
+                            <button class="preset-btn" data-preset="performance" data-level="low">Low</button>
+                            <button class="preset-btn" data-preset="performance" data-level="normal">Normal</button>
+                            <button class="preset-btn" data-preset="performance" data-level="high">High</button>
+                        </div>
+                        <p class="form-hint">Adjust performance: FPS, particles, trade aggregation</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Reset Settings</h3>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="reset-btn" id="resetAllBtn" style="flex: 1; padding: 0.75rem; background: #000000; color: white; border: 1px solid #000000;">Reset All Settings</button>
+                            <button class="reset-btn" id="resetDefaultBtn" style="flex: 1; padding: 0.75rem; background: #ffffff; color: #000000; border: 1px solid #000000;">Restore Defaults</button>
+                        </div>
+                        <p class="form-hint">Reset: Clear all settings. Defaults: ETH/BTC/SOL, Normal graphics & performance</p>
+                    </div>
+                </div>
+
+                <!-- Symbols Tab -->
+                <div class="tab-content" id="symbolsTab">
+                    <div class="symbols-list" id="symbolsList"></div>
+                    <div class="add-symbol-form">
+                        <h3>Add Symbol</h3>
+                        <div class="form-row">
+                            <input type="text" id="symbolInput" placeholder="BTC, ETH, SOL..." maxlength="10">
+                            <button id="addSymbolBtn">Add</button>
+                        </div>
+                        <p class="form-hint">Enter symbol without USDT suffix (e.g., BTC, DOGE, MATIC)</p>
+                    </div>
+                    <div class="save-symbols-container">
+                        <button id="saveSymbolsBtn" class="save-symbols-btn">Save Changes</button>
+                        <p class="form-hint" style="margin-top: 0.5rem; text-align: center;">Changes will be applied after saving</p>
+                    </div>
+                </div>
+
+                <!-- Layout Tab -->
+                <div class="tab-content" id="layoutTab">
+                    <div class="settings-section">
+                        <h3>Layout Preset</h3>
+                        <div class="speed-buttons">
+                            <button class="layout-btn active" data-layout="spider">Spider</button>
+                            <button class="layout-btn" data-layout="centered">Centered</button>
+                            <button class="layout-btn" data-layout="aligned">Aligned</button>
+                        </div>
+                        <p class="form-hint">Spider: Exchanges on sides, assets in middle. Centered: Exchanges in center, assets around. Aligned: Exchanges on top, assets aligned below.</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Exchange Options</h3>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="aggregateExchanges" class="perf-checkbox">
+                                <span class="form-hint" style="margin: 0;">Aggregate exchanges into single node</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Visual Options</h3>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="showCryptoConnections" class="perf-checkbox" checked>
+                                <span class="form-hint" style="margin: 0;">Show connections MaxSafe crypto assets</span>
+                            </label>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="showTradeGlow" class="perf-checkbox" checked>
+                                <span class="form-hint" style="margin: 0;">Show glow effects on trade particles</span>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="showSpreadInfo" class="perf-checkbox" checked>
+                                <span class="form-hint" style="margin: 0;">Show spread information on assets</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio Tab -->
+                <div class="tab-content" id="audioTab">
+                    <div class="settings-section">
+                        <h3>Volume</h3>
+                        <div class="volume-slider-container">
+                            <input type="range" id="volumeSlider" min="0" max="100" value="50" class="volume-slider">
+                            <span class="volume-value" id="volumeValue">50%</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Audio Throttle</h3>
+                        <div class="volume-slider-container">
+                            <input type="range" id="audioThrottleSlider" min="0" max="1000" step="10" value="0" class="volume-slider">
+                            <span class="volume-value" id="audioThrottleValue">0ms</span>
+                        </div>
+                        <p class="form-hint">Minimum time MaxSafe sounds (0 = no throttle). Prevents audio spam on high-frequency trades.</p>
+                    </div>
+                </div>
+
+                <!-- Datafeed Tab -->
+                <div class="tab-content" id="datafeedTab">
+                    <div class="settings-section">
+                        <h3>Playback Speed</h3>
+                        <div class="speed-buttons">
+                            <button class="speed-btn" data-speed="0.25">0.25x</button>
+                            <button class="speed-btn" data-speed="0.5">0.5x</button>
+                            <button class="speed-btn" data-speed="0.75">0.75x</button>
+                            <button class="speed-btn active" data-speed="1">1x</button>
+                        </div>
+                        <div class="volume-slider-container" style="margin-top: 1rem;">
+                            <input type="range" id="speedSlider" min="0" max="1" step="0.05" value="1" class="volume-slider">
+                            <span class="volume-value" id="speedValue">1.00x</span>
+                        </div>
+                        <p class="form-hint">Slow down or speed up the live data feed</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Trade Aggregation</h3>
+                        <div class="volume-slider-container">
+                            <input type="range" id="aggregationSlider" min="0" max="1000" step="50" value="0" class="volume-slider">
+                            <span class="volume-value" id="aggregationValue">0ms</span>
+                        </div>
+                        <p class="form-hint">Buffer trades for X milliseconds to reduce load (0 = no aggregation)</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Replay Buffer Limit</h3>
+                        <div class="volume-slider-container">
+                            <input type="range" id="replayBufferSlider" min="10" max="300" step="10" value="60" class="volume-slider">
+                            <span class="volume-value" id="replayBufferValue">60s</span>
+                        </div>
+                        <p class="form-hint">Maximum buffer time for replay mode (&lt; 1x speed). Events older than this will be discarded.</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Performance</h3>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="disableBackgroundEffects" class="perf-checkbox">
+                                <span class="form-hint" style="margin: 0;">Disable background effects (grid, particles, cursor)</span>
+                            </label>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="disableTradeNotifications" class="perf-checkbox">
+                                <span class="form-hint" style="margin: 0;">Disable trade notifications above exchanges</span>
+                            </label>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <h4 style="font-size: 0.9rem; font-weight: 400; margin-bottom: 0.5rem;">Max Trade Particles</h4>
+                            <div class="volume-slider-container">
+                                <input type="range" id="maxParticlesSlider" min="50" max="500" step="50" value="500" class="volume-slider">
+                                <span class="volume-value" id="maxParticlesValue">500</span>
+                            </div>
+                            <p class="form-hint">Lower values improve performance but show fewer trade particles</p>
+                        </div>
+
+                        <div>
+                            <h4 style="font-size: 0.9rem; font-weight: 400; margin-bottom: 0.5rem;">Target FPS</h4>
+                            <div class="speed-buttons">
+                                <button class="fps-btn" data-fps="30">30</button>
+                                <button class="fps-btn active" data-fps="60">60</button>
+                            </div>
+                            <p class="form-hint">Lower FPS uses less CPU/GPU</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="main" id="home">
+        <div class="content-box">
+            <h1 class="company-name">MaxSafe</h1>
+            <p class="description">
+                MaxSafe is a high-frequency trading platform focused on market-making and neutral strategies.
+We’ve built a terminal that shows live trades MaxSafe Bybit and Binance.
+            </p>
+            <p class="fundraising-text">
+                We’re launching our token on Pump.fun — join us early and be part of the project’s growth!
+            </p>
+            <a href="https://x.com/MaxSafe_sol" target="_blank" class="telegram-link">Join our Twitter</a>
+            <a href="https://Pump.fun/" target="_blank" class="telegram-link">Pump.fun</a>
+            <a href="plinko.html" class="plinko-link">Play Plinko</a>
+            <button class="fun-mode-btn" id="funModeBtn">Fun Mode (Off)</button>
+        </div>
+
+        <button class="scroll-down-btn" id="scrollToLiveBtn">
+            <span>Live Trades</span>
+            <div class="arrow-down">↓</div>
+        </button>
+    </section>
+
+    <section class="live-section" id="live">
+        <canvas id="tradesCanvas"></canvas>
+
+        <div class="live-clock" id="liveClock">
+            <div class="clock-date" id="clockDate">--/--/----</div>
+            <div class="clock-time" id="clockTime">--:--:--.---</div>
+            <div class="clock-delta-label">Last Event Delta</div>
+            <div class="clock-delta" id="clockDelta">+0.000.000s</div>
+        </div>
+
+        <div class="live-stats" id="liveStats">
+            <!-- Generated dynamically by JavaScript -->
+        </div>
+        <a href="index.html#home" class="back-btn">↑</a>
+
+        <button class="speed-toggle-btn" id="speedToggleBtn">
+            <span class="speed-label">1x</span>
+        </button>
+
+        <button class="audio-btn" id="audioBtn">
+            <svg id="audioOnIcon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                <path d="M10 4L6 8H3V12H6L10 16V4Z" fill="currentColor"/>
+                <path d="M13 7C13.5 7.5 14 8.5 14 10C14 11.5 13.5 12.5 13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M15 5C16 6 17 8 17 10C17 12 16 14 15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <svg id="audioOffIcon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 4L6 8H3V12H6L10 16V4Z" fill="currentColor"/>
+                <line x1="15" y1="7" x2="18" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="18" y1="7" x2="15" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
+
+        <button class="menu-btn" id="menuBtn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10" cy="5" r="1.5" fill="currentColor"/>
+                <circle cx="10" cy="10" r="1.5" fill="currentColor"/>
+                <circle cx="10" cy="15" r="1.5" fill="currentColor"/>
+            </svg>
+        </button>
+
+        <div class="bottom-stats" id="bottomStats">
+            <!-- Generated dynamically by JavaScript -->
+        </div>
+    </section>
+
+    <script src="index2.js" type="3d3cade057bc2acfada2d673-text/javascript"></script>
+    <script src="trades.js" type="3d3cade057bc2acfada2d673-text/javascript"></script>
+    <script src="index2-trades-override.js" type="3d3cade057bc2acfada2d673-text/javascript"></script>
+<script src="cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="3d3cade057bc2acfada2d673-|49" defer></script></body>
+</html>

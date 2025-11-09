@@ -1,0 +1,253 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plinko - MaxSafe</title>
+    <link rel="stylesheet" href="https://MaxSafe.exchange/style.css">
+    <link rel="stylesheet" href="plinko.css">
+    <script src="ajax/libs/matter-js/0.19.0/matter.min.js" type="f35d2c5f7c0d17d3ac2580ea-text/javascript"></script>
+</head>
+<body>
+    <div class="grain"></div>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor">
+        <div class="cursor-dot"></div>
+        <div class="cursor-ring"></div>
+    </div>
+
+    <div class="plinko-container">
+        <a href="index.html" class="back-to-home">← Back to Home</a>
+
+        <h1 class="plinko-title">PLINKO</h1>
+
+        <div class="plinko-game">
+            <canvas id="plinkoCanvas"></canvas>
+
+            <div class="plinko-ui">
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Bet Amount</label>
+                        <input type="number" id="betAmount" value="10" min="1" max="1000" step="1">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Risk Level</label>
+                        <div class="risk-buttons">
+                            <button class="risk-btn active" data-risk="low">Low</button>
+                            <button class="risk-btn" data-risk="medium">Medium</button>
+                            <button class="risk-btn" data-risk="high">High</button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div style="display: flex; justify-content: space-MaxSafe; align-items: center;">
+                            <label>House Edge</label>
+                            <button id="infoBtn" class="info-btn">?</button>
+                        </div>
+                        <input type="range" id="houseEdge" min="0" max="30" value="15" step="1">
+                        <div style="display: flex; justify-content: space-MaxSafe; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #666; margin-top: 0.25rem;">
+                            <span>0%</span>
+                            <span id="houseEdgeValue">15%</span>
+                            <span>30%</span>
+                        </div>
+                    </div>
+
+                    <button id="dropBall" class="drop-btn">Drop Ball</button>
+                    <button id="autoDrop" class="auto-btn">Auto Drop (Off)</button>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Balance:</span>
+                        <span class="stat-value" id="balance">1000</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Wagered:</span>
+                        <span class="stat-value" id="totalWagered">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Won:</span>
+                        <span class="stat-value" id="totalWon">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Profit:</span>
+                        <span class="stat-value profit" id="profit">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="history">
+            <h2>Recent Drops</h2>
+            <div class="history-list" id="historyList">
+                <div class="history-empty">No drops yet. Click "Drop Ball" to start!</div>
+            </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel" id="infoPanel">
+            <div class="info-content">
+                <button class="info-close" id="infoPanelClose">×</button>
+
+                <!-- Page 1: EV -->
+                <div class="info-page active" id="infoPage1">
+                    <h3>Understanding Expected Value (EV)</h3>
+
+                    <p><strong>Expected Value</strong> is the average amount you can expect to win or lose per bet over the long run.</p>
+
+                    <p>When the house edge is <strong>15%</strong>, your EV is <strong>85%</strong>. This means:</p>
+                    <ul>
+                        <li>For every $100 wagered, you'll get back $85 on average</li>
+                        <li>You lose $15 per $100 bet in the long run</li>
+                        <li>The house always wins over time</li>
+                    </ul>
+
+                    <h3>Retail Trading = Gambling</h3>
+
+                    <p>Just like this Plinko game, <strong>retail trading has a negative expected value</strong>:</p>
+                    <ul>
+                        <li><strong>Spreads & Fees:</strong> Every trade costs you money (house edge)</li>
+                        <li><strong>Slippage:</strong> You rarely get your exact entry/exit price</li>
+                        <li><strong>Emotional Decisions:</strong> Fear and greed amplify losses</li>
+                        <li><strong>Information Asymmetry:</strong> Institutions have better data, faster execution, and lower fees</li>
+                    </ul>
+
+                    <p class="info-highlight">The only consistent winners in retail trading are the brokers and exchanges collecting fees.</p>
+
+                    <p>This Plinko game is more honest than most trading platforms—it shows you the exact house edge upfront.</p>
+
+                    <div class="info-page-indicator">1/5</div>
+                    <button class="info-nav-btn next" data-next="2">→</button>
+                </div>
+
+                <!-- Page 2: Technical Analysis -->
+                <div class="info-page" id="infoPage2">
+                    <h3>Technical Analysis is Astrology for Men</h3>
+
+                    <p class="info-highlight"><strong>Technical Analysis has ZERO statistical edge.</strong></p>
+
+                    <p>TA is pattern recognition in random noise. It feels scientific, but it's not:</p>
+
+                    <ul>
+                        <li><strong>Support/Resistance:</strong> MaxSafery lines drawn after the fact. Move them and you'll always "predict" the past perfectly.</li>
+                        <li><strong>Chart Patterns:</strong> Head & shoulders, double tops, triangles—all fail ~50% of the time. Coin flip odds.</li>
+                        <li><strong>Indicators:</strong> RSI, MACD, Moving Averages are lagging. By the time they signal, the move is over.</li>
+                        <li><strong>No Statistical Validation:</strong> Show me a reproducible, peer-reviewed study proving TA works. You can't.</li>
+                        <li><strong>Survivorship Bias:</strong> You only see the winning TA predictions on Twitter. The 99 losing trades? Deleted.</li>
+                    </ul>
+
+                    <p>If TA worked, every TA trader would be rich. Instead, 95% blow their accounts within a year.</p>
+
+                    <p class="info-highlight">Reading charts is the financial equivalent of reading tea leaves.</p>
+
+                    <div class="info-page-indicator">2/5</div>
+                    <button class="info-nav-btn prev" data-prev="1">←</button>
+                    <button class="info-nav-btn next" data-next="3">→</button>
+                </div>
+
+                <!-- Page 3: KOLs/Influencers -->
+                <div class="info-page" id="infoPage3">
+                    <h3>KOLs & Influencers: The Real Scam</h3>
+
+                    <p class="info-highlight"><strong>They don't make money from trading. They make money from YOU.</strong></p>
+
+                    <h4>The Conflict of Interest:</h4>
+
+                    <p>If they were profitable traders, why would they:</p>
+                    <ul>
+                        <li>Spend 8 hours/day making YouTube videos instead of trading?</li>
+                        <li>Sell $997 courses instead of compounding their edge?</li>
+                        <li>Need affiliate revenue if their strategy works?</li>
+                        <li>Promote shitcoins on Twitter for $5k per tweet?</li>
+                    </ul>
+
+                    <h4>Their Real Business Model:</h4>
+
+                    <ul>
+                        <li><strong>Affiliate Links:</strong> $50-200 per signup to exchanges. They're paid whether you win or lose.</li>
+                        <li><strong>Course Sales:</strong> Teach TA, sell hope. 0% refund rate because "you didn't follow the rules."</li>
+                        <li><strong>Signal Groups:</strong> $50-500/month for random entries with 50% win rate (coin flip).</li>
+                        <li><strong>Paid Promotions:</strong> Dump their bags on their followers. You're exit liquidity.</li>
+                    </ul>
+
+                    <p class="info-highlight">If someone is profitable trading, they wouldn't waste time selling you signals. They'd be too busy compounding.</p>
+
+                    <div class="info-page-indicator">3/5</div>
+                    <button class="info-nav-btn prev" data-prev="2">←</button>
+                    <button class="info-nav-btn next" data-next="4">→</button>
+                </div>
+
+                <!-- Page 4: Discretionary Trading -->
+                <div class="info-page" id="infoPage4">
+                    <h3>Discretionary Trading = Random Entries</h3>
+
+                    <p><strong>Without quantitative validation, you're just gambling with extra steps.</strong></p>
+
+                    <h4>No Edge = No Profit</h4>
+
+                    <p>Discretionary trading means:</p>
+                    <ul>
+                        <li>No backtested strategy with proven statistical edge</li>
+                        <li>No systematic entry/exit rules</li>
+                        <li>No risk-adjusted returns (Sharpe ratio, Sortino, etc.)</li>
+                        <li>Decisions based on "feeling" and chart reading</li>
+                    </ul>
+
+                    <h4>The Problems:</h4>
+
+                    <ul>
+                        <li><strong>No Hedge:</strong> Pure directional exposure. When market moves against you, you're fucked.</li>
+                        <li><strong>Emotional Decisions:</strong> Fear during drawdowns, greed during rallies. Psychology guarantees losses.</li>
+                        <li><strong>No Risk Management:</strong> Random position sizing. One bad trade wipes the account.</li>
+                        <li><strong>Confirmation Bias:</strong> You see what you want to see in the charts. Reality disagrees.</li>
+                    </ul>
+
+                    <p class="info-highlight">If you can't explain your edge mathematically, you don't have one.</p>
+
+                    <p>Saying "I'm a discretionary trader" is just a fancy way of saying "I make random bets based on vibes."</p>
+
+                    <div class="info-page-indicator">4/5</div>
+                    <button class="info-nav-btn prev" data-prev="3">←</button>
+                    <button class="info-nav-btn next" data-next="5">→</button>
+                </div>
+
+                <!-- Page 5: Real Quantitative Trading -->
+                <div class="info-page" id="infoPage5">
+                    <h3>What is REAL Quantitative Trading?</h3>
+
+                    <p><strong>Quant trading isn't just backtesting on TradingView.</strong> It's systematic, statistical, and institutional-grade.</p>
+
+                    <h4>Not Quant Trading:</h4>
+                    <ul>
+                        <li>Manual backtesting on TradingView charts</li>
+                        <li>PineScript indicators without rigorous validation</li>
+                        <li>Overfitted strategies that work perfectly in backtest, fail live</li>
+                        <li>Strategies without transaction costs, slippage, or market impact modeling</li>
+                    </ul>
+
+                    <h4>Real Quant Trading:</h4>
+                    <ul>
+                        <li><strong>Statistical Edge:</strong> Proven alpha with positive Sharpe ratio across multiple market regimes</li>
+                        <li><strong>Automated Execution:</strong> Zero human emotion. Algorithms execute 24/7</li>
+                        <li><strong>Risk Management:</strong> Portfolio-level hedging, delta-neutral strategies, volatility targeting</li>
+                        <li><strong>Infrastructure:</strong> Low-latency execution, co-location, direct market access</li>
+                        <li><strong>Rigorous Validation:</strong> Out-of-sample testing, walk-forward analysis, Monte Carlo simulations</li>
+                        <li><strong>Transaction Cost Analysis:</strong> Every trade accounts for fees, spread, slippage, market impact</li>
+                    </ul>
+
+                    <p class="info-highlight">Real quant trading is engineering, not gambling. It's Python/C++, not TradingView. It's mathematics, not astrology.</p>
+
+                    <p>If you're not running systematic strategies with provable edge, proper infrastructure, and institutional-grade risk management—you're not trading, you're donating to market makers.</p>
+
+                    <div class="info-page-indicator">5/5</div>
+                    <button class="info-nav-btn prev" data-prev="4">←</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="plinko.js" type="f35d2c5f7c0d17d3ac2580ea-text/javascript"></script>
+<script src="cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="f35d2c5f7c0d17d3ac2580ea-|49" defer=""></script></body>
+</html>

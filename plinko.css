@@ -1,0 +1,643 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none;
+}
+
+/* Custom Cursor */
+.custom-cursor {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+}
+
+.cursor-dot {
+    width: 6px;
+    height: 6px;
+    background: #000000;
+    border-radius: 50%;
+    position: fixed;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease;
+    z-index: 10001;
+}
+
+.cursor-ring {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #000000;
+    border-radius: 50%;
+    position: fixed;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+    z-index: 10000;
+}
+
+.cursor-ring.hover {
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 0, 0, 0.05);
+    border-width: 2px;
+}
+
+/* Force cursor: none on all interactive elements */
+button,
+a,
+input,
+input[type="range"],
+input[type="number"],
+.back-to-home,
+.risk-btn,
+.drop-btn,
+.auto-btn,
+.info-btn,
+.info-close,
+.info-nav-btn,
+.speed-btn,
+.preset-btn,
+.layout-btn,
+.fps-btn {
+    cursor: none !important;
+}
+
+.plinko-container {
+    min-height: 100vh;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    background: #ffffff;
+}
+
+.back-to-home {
+    position: absolute;
+    top: 3rem;
+    left: 3rem;
+    color: #000000;
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #000000;
+    z-index: 100;
+    background: #ffffff;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.back-to-home:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+.plinko-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2rem;
+    font-weight: 300;
+    color: #000000;
+    margin-bottom: 3rem;
+    text-align: center;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+}
+
+.plinko-game {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+}
+
+#plinkoCanvas {
+    border: 1px solid #000000;
+    background: #ffffff;
+}
+
+.plinko-ui {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 320px;
+}
+
+.controls {
+    background: #ffffff;
+    border: 1px solid #000000;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.control-group label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 500;
+}
+
+#betAmount {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    background: #ffffff;
+    border: 1px solid #000000;
+    color: #000000;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+#betAmount:focus {
+    background: #000000;
+    color: #ffffff;
+}
+
+.risk-buttons {
+    display: flex;
+    gap: 0;
+    border: 1px solid #000000;
+}
+
+.risk-btn {
+    flex: 1;
+    padding: 0.875rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    background: #ffffff;
+    border: none;
+    border-right: 1px solid #000000;
+    color: #000000;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.risk-btn:last-child {
+    border-right: none;
+}
+
+.risk-btn:hover {
+    background: #f5f5f5;
+}
+
+.risk-btn.active {
+    background: #000000;
+    color: #ffffff;
+}
+
+.drop-btn,
+.auto-btn {
+    width: 100%;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: #000000;
+    color: #ffffff;
+    border: 1px solid #000000;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+.drop-btn:hover {
+    background: #ffffff;
+    color: #000000;
+}
+
+.drop-btn:active {
+    transform: scale(0.98);
+}
+
+.auto-btn {
+    background: #ffffff;
+    color: #000000;
+}
+
+.auto-btn:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+.auto-btn.active {
+    background: #000000;
+    color: #ffffff;
+}
+
+.stats {
+    background: #ffffff;
+    border: 1px solid #000000;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-MaxSafe;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #666666;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #000000;
+}
+
+.stat-value.profit.positive {
+    color: #000000;
+}
+
+.stat-value.profit.negative {
+    color: #666666;
+}
+
+.history {
+    width: 100%;
+    max-width: 1200px;
+    background: #ffffff;
+    border: 1px solid #000000;
+    padding: 2rem;
+}
+
+.history h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: #000000;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 500;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.history-empty {
+    font-family: 'JetBrains Mono', monospace;
+    color: #999999;
+    text-align: center;
+    padding: 3rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-MaxSafe;
+    align-items: center;
+    padding: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.history-item:hover {
+    background: #fafafa;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.history-bet {
+    color: #999999;
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+.history-multiplier {
+    color: #000000;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.history-win {
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+.history-win.positive {
+    color: #000000;
+}
+
+.history-win.negative {
+    color: #999999;
+}
+
+/* Custom scrollbar */
+.history-list::-webkit-scrollbar {
+    width: 1px;
+}
+
+.history-list::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+    background: #000000;
+}
+
+.history-list::-webkit-scrollbar-thumb:hover {
+    background: #333333;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    .plinko-game {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #plinkoCanvas {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+    }
+
+    .plinko-ui {
+        width: 100%;
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 768px) {
+    .plinko-container {
+        padding: 1.5rem;
+    }
+
+    .plinko-title {
+        font-size: 1.5rem;
+    }
+
+    .back-to-home {
+        top: 1.5rem;
+        left: 1.5rem;
+        font-size: 0.65rem;
+        padding: 0.6rem 1.2rem;
+    }
+
+    #plinkoCanvas {
+        max-width: 100%;
+    }
+
+    .history {
+        padding: 1.5rem;
+    }
+
+    .history h2 {
+        font-size: 0.7rem;
+    }
+}
+
+/* House Edge Slider */
+#houseEdge {
+    width: 100%;
+    height: 2px;
+    background: #e0e0e0;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+#houseEdge::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #000000;
+    cursor: pointer;
+    border: none;
+}
+
+#houseEdge::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #000000;
+    cursor: pointer;
+    border: none;
+}
+
+/* Info Button */
+.info-btn {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #000000;
+    background: #ffffff;
+    color: #000000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.info-btn:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+/* Info Panel */
+.info-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.info-panel.active {
+    display: flex;
+}
+
+.info-content {
+    background: #ffffff;
+    border: 1px solid #000000;
+    padding: 3rem;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.info-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #000000;
+    background: #ffffff;
+    color: #000000;
+    font-size: 1.5rem;
+    font-weight: 300;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.info-close:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+.info-content h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    color: #000000;
+}
+
+.info-content p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: #000000;
+    margin-bottom: 1rem;
+}
+
+.info-content ul {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1.7;
+    color: #333333;
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.info-content ul li {
+    margin-bottom: 0.5rem;
+}
+
+.info-highlight {
+    background: #f5f5f5;
+    border-left: 2px solid #000000;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    font-weight: 500;
+}
+
+.info-content strong {
+    font-weight: 600;
+    color: #000000;
+}
+
+.info-content h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #000000;
+}
+
+/* Info Pages */
+.info-page {
+    display: none;
+    padding-bottom: 5rem;
+}
+
+.info-page.active {
+    display: block;
+}
+
+/* Info Navigation Buttons */
+.info-nav-btn {
+    position: absolute;
+    bottom: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #000000;
+    background: #ffffff;
+    color: #000000;
+    font-size: 1.2rem;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.info-nav-btn.next {
+    right: 1.5rem;
+}
+
+.info-nav-btn.prev {
+    left: 1.5rem;
+}
+
+.info-nav-btn:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+/* Info Page Indicator */
+.info-page-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #999;
+    letter-spacing: 0.1em;
+}
